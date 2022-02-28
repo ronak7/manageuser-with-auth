@@ -1,0 +1,110 @@
+<form class="form-inline" #filterForm="ngForm" id="filterForm" name="filterForm">
+    <label for="search" class="mb-2 mr-sm-2">Search:</label>
+    <input type="text" class="form-control mb-2 mr-sm-2" id="search" placeholder="Enter" name="search"
+        [(ngModel)]="filter.search" #search="ngModel">
+    <label for="status" class="mb-2 mr-sm-2">Select Status:</label>
+    <select class="form-control mb-2 mr-sm-2" id="status" name="status" [(ngModel)]="filter.status" #status="ngModel">
+        <option value="true">Active</option>
+        <option value="false">Inactive</option>
+    </select>
+    <button type="button" class="btn btn-primary mb-2" id="searchBtn" (click)="filterData(filter)">Search</button>
+</form>
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let user of userList">
+            <td>
+                <img src='{{user.image=="" ? "assets/img/default.png" : serverURL+"/"+user.image}}'
+                    alt="{{user.firstname}}" width="50px" height="50px">
+            </td>
+            <td>{{user.firstname+' '+user.lastname}}</td>
+            <td>{{user.email}}</td>
+            <td>{{user.status ? 'Active' : 'Inactive'}}</td>
+            <td>
+                <button type="button" class="btn btn-primary btn-sm"
+                    (click)="changeStatus(user._id, !user.status)">{{user.status ? 'Inactive' : 'Active'}}</button>
+                &nbsp;
+                <button type="button" class="btn btn-primary btn-sm" *ngIf="user.status"
+                    (click)="editUser(user._id)">Edit</button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<!-- The Modal -->
+<div class="modal" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Edit User</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <form class="form-inline" #userUpdateForm="ngForm" id="userUpdateForm" name="userUpdateForm"
+                (ngSubmit)="userUpdateForm.valid && updateUser(userUpdateForm)" enctype="multipart/form-data">
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-9">
+
+                            <div class="form-group">
+                                <label for="firstname" class="mb-4 mr-sm-4">First name:</label>
+                                <input type="text" class="form-control mb-4 mr-sm-4" id="firstname" placeholder="Enter" name="firstname" [(ngModel)]="userData.firstname" #firstname="ngModel" required>
+                                <span class="text-danger" *ngIf="(firstname.errors?.['required'] && firstname.touched)">Please fill out this field.</span>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="lastname" class="mb-4 mr-sm-4">Last name:</label>
+                                <input type="text" class="form-control mb-4 mr-sm-4" id="lastname" placeholder="Enter"
+                                    name="lastname" [(ngModel)]="userData.lastname" #lastname="ngModel" required>
+                                <div class="text-danger" *ngIf="(lastname.errors?.['required'] && lastname.touched)">Please fill out this
+                                    field.</div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="email" class="mb-4 mr-sm-4">Email:</label>
+                                <input type="text" class="form-control mb-4 mr-sm-4" id="email" placeholder="Enter"
+                                    name="email" [(ngModel)]="userData.email" #email="ngModel" pattern="(^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$)" required>
+                                <div class="text-danger" *ngIf="(email.errors?.['required'] && email.touched)">Please fill out this field.
+                                </div>
+                                <div class="text-danger" *ngIf="email.errors?.['pattern'] && email.touched">Please enter valid email.</div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="password" class="mb-4 mr-sm-4">Password:</label>
+                                <input type="text" class="form-control mb-4 mr-sm-4" id="password" placeholder="Enter"
+                                    name="password" [(ngModel)]="userData.password" #password="ngModel">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="file" class="mb-4 mr-sm-4">file:</label>
+                                <input type="file" class="form-control mb-4 mr-sm-4" id="file" name="file"
+                                    accept="image/*" (change)="uploadFile($event)">
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <img src='{{userData.image=="" ? "assets/img/default.png" : serverURL+"/"+userData.image}}'
+                                alt="{{userData.firstname}}" width="100px" height="100px">
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Update</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<ng-http-loader></ng-http-loader>

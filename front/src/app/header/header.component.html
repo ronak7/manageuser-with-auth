@@ -1,0 +1,21 @@
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+    <ul class="navbar-nav" *ngIf="ckLogin()">
+        <li class="nav-item active">
+            <a class="nav-link" [routerLink]="['/home']" routerLinkActive="router-link-active" >Profile</a>
+        </li>
+        <li class="nav-item active">
+            <a class="nav-link" [routerLink]="['/userlist']">User List</a>
+        </li>
+        <li class="nav-item">
+            <button class="btn btn-link"(click)="logout()">Logout</button>
+        </li>
+    </ul>
+    <ul class="navbar-nav" *ngIf="!ckLogin()">
+        <li class="nav-item active">
+            <a class="nav-link" [routerLink]="['/login']" routerLinkActive="router-link-active" >Login</a>
+        </li>
+        <li class="nav-item active">
+            <a class="nav-link" [routerLink]="['/signup']">Signup</a>
+        </li>
+    </ul>
+</nav>
